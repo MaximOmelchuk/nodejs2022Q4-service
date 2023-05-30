@@ -3,20 +3,26 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
 } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common/exceptions';
+import { HttpCode } from '@nestjs/common/decorators';
+import { ParseUUIDPipe, ValidationPipe } from '@nestjs/common/pipes';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
+    console.log(createUserDto);
+
     return this.userService.create(createUserDto);
   }
 
@@ -26,17 +32,23 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string): UserEntity {
+    const user = this.userService.findOne(id);
+    if (!user) throw new NotFoundException();
+    return user;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Put(':id')
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
+  ) {
+    const user = this.userService.update(id, updateUserDto);
+    return user;
   }
-
+  @HttpCode(204)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.userService.remove(id);
   }
 }
