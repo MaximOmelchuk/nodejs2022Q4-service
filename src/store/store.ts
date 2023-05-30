@@ -1,8 +1,9 @@
+import { TrackEntity } from 'src/track/entities/track.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 export class Store {
   users: UserEntity[] = [];
+  tracks: TrackEntity[] = [];
   //   artist: UserEntity[] = [];
-  //   track: User[] = [];
   //   album: User[] = [];
   //   favorites: User[] = [];
 }

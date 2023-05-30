@@ -21,8 +21,6 @@ export class UserController {
 
   @Post()
   create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
-    console.log(createUserDto);
-
     return this.userService.create(createUserDto);
   }
 
@@ -33,9 +31,7 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe()) id: string): UserEntity {
-    const user = this.userService.findOne(id);
-    if (!user) throw new NotFoundException();
-    return user;
+    return this.userService.findOne(id);
   }
 
   @Put(':id')

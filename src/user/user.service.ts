@@ -30,7 +30,9 @@ export class UserService {
   }
 
   findOne(id: string) {
-    return this.store.users.find((user) => user.id === id);
+    const user: UserEntity = this.store.users.find((user) => user.id === id);
+    if (!user) throw new NotFoundException();
+    return user;
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
