@@ -1,16 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateFavDto } from './dto/create-fav.dto';
-import { UpdateFavDto } from './dto/update-fav.dto';
 import store, { Store } from 'src/store/store';
-import { FavEntity, FavResp } from './entities/fav.entity';
+import { FavResp } from './entities/fav.entity';
 
 @Injectable()
 export class FavsService {
   private store: Store = store;
-
-  create(createFavDto: CreateFavDto) {
-    return 'This action adds a new fav';
-  }
 
   findAll() {
     const allArtists = store.artist;
@@ -68,12 +62,4 @@ export class FavsService {
     if (idx < 0) throw new NotFoundException();
     this.store.favs.albums.splice(idx, 1);
   }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} fav`;
-  // }
-
-  // update(id: number, updateFavDto: UpdateFavDto) {
-  //   return `This action updates a #${id} fav`;
-  // }
 }

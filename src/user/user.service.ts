@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import store, { Store } from 'src/store/store';
+import omitKeyFromObj from 'src/utils/omitKeyFromObj';
 
 @Injectable()
 export class UserService {
@@ -22,26 +23,29 @@ export class UserService {
       updatedAt: date,
     };
     this.store.users.push(user);
-    return user;
+    return omitKeyFromObj(user, 'password');
   }
 
   findAll() {
-    return this.store.users;
+    return this.store.users.map((item) => {
+      return omitKeyFromObj(item, 'password');
+    });
   }
 
   findOne(id: string) {
     const user: UserEntity = this.store.users.find((user) => user.id === id);
     if (!user) throw new NotFoundException();
-    return user;
+    return omitKeyFromObj(user, 'password');
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
     const user: UserEntity = this.store.users.find((user) => user.id === id);
     if (!user) throw new NotFoundException();
-    if (user.password !== updateUserDto.oldPassword)
+    if (user.password !== updateUserDto.oldPassword) {
       throw new ForbiddenException();
+    }
     user.password = updateUserDto?.newPassword;
-    return user;
+    return omitKeyFromObj(user, 'password');
   }
 
   remove(id: string) {

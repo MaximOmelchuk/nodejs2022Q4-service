@@ -4,6 +4,6 @@ import { FavsController } from './favs.controller';
 
 @Module({
   controllers: [FavsController],
-  providers: [FavsService]
+  providers: [FavsService],
 })
 export class FavsModule {}
