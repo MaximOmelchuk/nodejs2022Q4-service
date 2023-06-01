@@ -3,6 +3,7 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import store, { Store } from 'src/store/store';
 import { AlbumEntity } from './entities/album.entity';
+import copyObjKeyToNull from 'src/utils/copyObjKeyToNull';
 
 @Injectable()
 export class AlbumService {
@@ -43,5 +44,14 @@ export class AlbumService {
     const idx: number = this.store.album.findIndex((item) => item.id === id);
     if (idx < 0) throw new NotFoundException();
     this.store.album.splice(idx, 1);
+
+    this.store.favs.albums.filter((favId) => favId !== id);
+
+    this.store.tracks = this.store.tracks.map((track) => {
+      if (track.albumId === id) {
+        return copyObjKeyToNull(track, 'albumId');
+      }
+      return track;
+    });
   }
 }

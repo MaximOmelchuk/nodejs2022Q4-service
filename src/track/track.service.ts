@@ -1,7 +1,4 @@
-import {
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common/exceptions';
+import { NotFoundException } from '@nestjs/common/exceptions';
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -49,5 +46,7 @@ export class TrackService {
     const idx: number = this.store.tracks.findIndex((item) => item.id === id);
     if (idx < 0) throw new NotFoundException();
     this.store.tracks.splice(idx, 1);
+
+    this.store.favs.tracks.filter((favId) => favId !== id);
   }
 }

@@ -4,6 +4,7 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import store, { Store } from 'src/store/store';
 import { ArtistEntity } from './entities/artist.entity';
+import copyObjKeyToNull from 'src/utils/copyObjKeyToNull';
 
 @Injectable()
 export class ArtistService {
@@ -44,5 +45,21 @@ export class ArtistService {
     const idx: number = this.store.artist.findIndex((item) => item.id === id);
     if (idx < 0) throw new NotFoundException();
     this.store.artist.splice(idx, 1);
+
+    this.store.favs.artists.filter((favId) => favId !== id);
+
+    this.store.tracks = this.store.tracks.map((track) => {
+      if (track.artistId === id) {
+        return copyObjKeyToNull(track, 'artistId');
+      }
+      return track;
+    });
+
+    this.store.album = this.store.album.map((album) => {
+      if (album.artistId === id) {
+        return copyObjKeyToNull(album, 'artistId');
+      }
+      return album;
+    });
   }
 }
