@@ -1,4 +1,3 @@
-import crypto from "crypto"
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -10,7 +9,7 @@ export class AlbumService {
   private store: Store = store;
 
   create(createAlbumDto: CreateAlbumDto) {
-    const created: AlbumEntity = { 
+    const created: AlbumEntity = {
       id: crypto.randomUUID(),
       ...createAlbumDto,
     };
