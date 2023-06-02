@@ -45,6 +45,8 @@ export class UserService {
       throw new ForbiddenException();
     }
     user.password = updateUserDto?.newPassword;
+    user.version = user.version + 1;
+    user.updatedAt = Date.now();
     return omitKeyFromObj(user, 'password');
   }
 

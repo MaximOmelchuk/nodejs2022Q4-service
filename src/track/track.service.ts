@@ -47,6 +47,8 @@ export class TrackService {
     if (idx < 0) throw new NotFoundException();
     this.store.tracks.splice(idx, 1);
 
-    this.store.favs.tracks.filter((favId) => favId !== id);
+    this.store.favs.tracks = this.store.favs.tracks.filter(
+      (favId) => favId !== id,
+    );
   }
 }

@@ -46,7 +46,9 @@ export class ArtistService {
     if (idx < 0) throw new NotFoundException();
     this.store.artist.splice(idx, 1);
 
-    this.store.favs.artists.filter((favId) => favId !== id);
+    this.store.favs.artists = this.store.favs.artists.filter(
+      (favId) => favId !== id,
+    );
 
     this.store.tracks = this.store.tracks.map((track) => {
       if (track.artistId === id) {

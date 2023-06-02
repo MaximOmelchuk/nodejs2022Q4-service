@@ -45,7 +45,9 @@ export class AlbumService {
     if (idx < 0) throw new NotFoundException();
     this.store.album.splice(idx, 1);
 
-    this.store.favs.albums.filter((favId) => favId !== id);
+    this.store.favs.albums = this.store.favs.albums.filter(
+      (favId) => favId !== id,
+    );
 
     this.store.tracks = this.store.tracks.map((track) => {
       if (track.albumId === id) {

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import store, { Store } from 'src/store/store';
 import { FavResp } from './entities/fav.entity';
 
@@ -29,19 +29,19 @@ export class FavsService {
 
   addTracktoFav(id: string) {
     const isExist = this.store.tracks.find((item) => item.id === id);
-    if (!isExist) throw new NotFoundException();
+    if (!isExist) throw new HttpException('Not exist', 422);
     this.store.favs.tracks.push(id);
     return 'Entity added to favourites';
   }
   addAlbumToFav(id: string) {
     const isExist = this.store.album.find((item) => item.id === id);
-    if (!isExist) throw new NotFoundException();
+    if (!isExist) throw new HttpException('Not exist', 422);
     this.store.favs.albums.push(id);
     return 'Entity added to favourites';
   }
   addArtistToFav(id: string) {
     const isExist = this.store.artist.find((item) => item.id === id);
-    if (!isExist) throw new NotFoundException();
+    if (!isExist) throw new HttpException('Not exist', 422);
     this.store.favs.artists.push(id);
   }
 
