@@ -1,3 +1,6 @@
+import { Entity } from 'typeorm';
+
+@Entity('TrackEntity')
 export class TrackEntity {
   id: string; // uuid v4
   name: string;

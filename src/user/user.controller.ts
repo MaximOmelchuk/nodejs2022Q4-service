@@ -19,34 +19,34 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(
+  async create(
     @Body(new ValidationPipe()) createUserDto: CreateUserDto,
-  ): UserResponseEntity {
-    return this.userService.create(createUserDto);
+  ): Promise<UserResponseEntity> {
+    return await this.userService.create(createUserDto);
   }
 
   @Get()
-  findAll(): UserResponseEntity[] {
-    return this.userService.findAll();
+  async findAll(): Promise<UserResponseEntity[]> {
+    return await this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string): UserResponseEntity {
-    return this.userService.findOne(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id', new ParseUUIDPipe()) id: string): UserResponseEntity {
+  //   return this.userService.findOne(id);
+  // }
 
-  @Put(':id')
-  update(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
-  ): UserResponseEntity {
-    const user = this.userService.update(id, updateUserDto);
-    return user;
-  }
+  // @Put(':id')
+  // update(
+  //   @Param('id', new ParseUUIDPipe()) id: string,
+  //   @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
+  // ): UserResponseEntity {
+  //   const user = this.userService.update(id, updateUserDto);
+  //   return user;
+  // }
 
-  @HttpCode(204)
-  @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.userService.remove(id);
-  }
+  // @HttpCode(204)
+  // @Delete(':id')
+  // remove(@Param('id', new ParseUUIDPipe()) id: string) {
+  //   return this.userService.remove(id);
+  // }
 }

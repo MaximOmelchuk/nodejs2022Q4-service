@@ -21,7 +21,7 @@ export class UserEntity {
   updatedAt: number;
 
   toResponse() {
-    const { id, login } = this;
-    return { id, login };
+    const { id, login, version, createdAt, updatedAt } = this;
+    return { id, login, version, createdAt, updatedAt };
   }
 }

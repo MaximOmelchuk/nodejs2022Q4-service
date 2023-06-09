@@ -9,7 +9,7 @@ export default {
   port: parseInt(process.env.POSTGRES_PORT as string, 10) as number,
   username: process.env.POSTGRES_USER as string,
   password: process.env.POSTGRES_PASSWORD as string,
-  database: process.env.POSTGRES_DB as string,
+  database: process.env.POSTGRES_DATABASE as string,
   synchronize: false,
-  entities: ['dist/**/entities/*.entities.js'],
+  entities: ['./dist/**/entities/*.entities.js)'],
 } as DataSourceOptions;
