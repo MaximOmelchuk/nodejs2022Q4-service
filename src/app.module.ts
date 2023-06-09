@@ -12,10 +12,10 @@ import configService from './ormconfig';
 @Module({
   imports: [
     UserModule,
-    TrackModule,
-    ArtistModule,
-    AlbumModule,
-    FavsModule,
+    // TrackModule,
+    // ArtistModule,
+    // AlbumModule,
+    // FavsModule,
     TypeOrmModule.forRoot(configService),
   ],
   controllers: [AppController],
