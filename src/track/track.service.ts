@@ -4,6 +4,7 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import store, { Store } from 'src/store/store';
 import { TrackEntity } from './entities/track.entity';
+import * as uuid from "uuid"
 
 @Injectable()
 export class TrackService {
@@ -11,7 +12,7 @@ export class TrackService {
 
   create(createTrackDto: CreateTrackDto) {
     const track: TrackEntity = {
-      id: crypto.randomUUID(),
+      id: uuid.v4(),
       ...createTrackDto,
       artistId: createTrackDto.artistId || null,
       albumId: createTrackDto.albumId || null,

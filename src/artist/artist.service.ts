@@ -5,6 +5,7 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import store, { Store } from 'src/store/store';
 import { ArtistEntity } from './entities/artist.entity';
 import copyObjKeyToNull from 'src/utils/copyObjKeyToNull';
+import * as uuid from "uuid"
 
 @Injectable()
 export class ArtistService {
@@ -12,7 +13,7 @@ export class ArtistService {
 
   create(createArtistDto: CreateArtistDto) {
     const created: ArtistEntity = {
-      id: crypto.randomUUID(),
+      id: uuid.v4(),
       ...createArtistDto,
     };
     this.store.artist.push(created);

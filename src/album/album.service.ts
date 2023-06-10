@@ -4,6 +4,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import store, { Store } from 'src/store/store';
 import { AlbumEntity } from './entities/album.entity';
 import copyObjKeyToNull from 'src/utils/copyObjKeyToNull';
+import * as uuid from "uuid"
 
 @Injectable()
 export class AlbumService {
@@ -11,7 +12,7 @@ export class AlbumService {
 
   create(createAlbumDto: CreateAlbumDto) {
     const created: AlbumEntity = {
-      id: crypto.randomUUID(),
+      id: uuid.v4(),
       ...createAlbumDto,
     };
     this.store.album.push(created);

@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import store, { Store } from 'src/store/store';
 import omitKeyFromObj from 'src/utils/omitKeyFromObj';
+import * as uuid from "uuid"
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
     const date = Date.now();
     const user: UserEntity = {
       ...createUserDto,
-      id: crypto.randomUUID(),
+      id: uuid.v4(),
       version: 1,
       createdAt: date,
       updatedAt: date,
