@@ -13,8 +13,8 @@ import configService from './ormconfig';
   imports: [
     UserModule,
     TrackModule,
+    AlbumModule,
     // ArtistModule,
-    // AlbumModule,
     // FavsModule,
     TypeOrmModule.forRoot(configService),
   ],

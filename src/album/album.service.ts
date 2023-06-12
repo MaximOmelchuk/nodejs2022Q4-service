@@ -1,59 +1,60 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import store, { Store } from 'src/store/store';
 import { AlbumEntity } from './entities/album.entity';
 import copyObjKeyToNull from 'src/utils/copyObjKeyToNull';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class AlbumService {
-  private store: Store = store;
+  constructor(
+    @InjectRepository(AlbumEntity)
+    private albumRepository: Repository<AlbumEntity>, // @InjectRepository(TrackEntity) // private trackRepository: Repository<TrackEntity>,    // TODO FAVS
+  ) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
+  async create(createAlbumDto: CreateAlbumDto) {
     const created: AlbumEntity = {
-      id: crypto.randomUUID(),
+      id: uuid.v4(),
       ...createAlbumDto,
     };
-    this.store.album.push(created);
-    return created;
+    return await this.albumRepository.save(created);
   }
 
   findAll() {
-    return this.store.album;
+    return this.albumRepository.find();
   }
 
-  findOne(id: string) {
-    const found = this.store.album.find((item) => item.id === id);
+  async findOne(id: string) {
+    const found = this.albumRepository.findOneBy({ id });
     if (!found) throw new NotFoundException();
     return found;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const idx: number = this.store.album.findIndex((item) => item.id === id);
-
-    if (idx < 0) throw new NotFoundException();
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    const album = await this.findOne(id);
     const updated: AlbumEntity = {
-      ...this.store.album[idx],
+      ...album,
       ...updateAlbumDto,
     };
-    this.store.album[idx] = updated;
-    return updated;
+    await this.albumRepository.save(updated);
+    return await this.findOne(id);
   }
 
-  remove(id: string) {
-    const idx: number = this.store.album.findIndex((item) => item.id === id);
-    if (idx < 0) throw new NotFoundException();
-    this.store.album.splice(idx, 1);
+  async remove(id: string) {
+    const album = await this.findOne(id);
+    this.albumRepository.delete({ id });
 
-    this.store.favs.albums = this.store.favs.albums.filter(
-      (favId) => favId !== id,
-    );
+    // this.store.favs.albums = this.store.favs.albums.filter(
+    //   (favId) => favId !== id,
+    // );
 
-    this.store.tracks = this.store.tracks.map((track) => {
-      if (track.albumId === id) {
-        return copyObjKeyToNull(track, 'albumId');
-      }
-      return track;
-    });
+    // this.store.tracks = this.store.tracks.map((track) => {
+    //   if (track.albumId === id) {
+    //     return copyObjKeyToNull(track, 'albumId');
+    //   }
+    //   return track;
+    // });
   }
 }
