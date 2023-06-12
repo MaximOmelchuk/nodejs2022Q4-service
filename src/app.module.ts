@@ -14,7 +14,7 @@ import configService from './ormconfig';
     UserModule,
     TrackModule,
     AlbumModule,
-    // ArtistModule,
+    ArtistModule,
     // FavsModule,
     TypeOrmModule.forRoot(configService),
   ],
