@@ -62,8 +62,12 @@ export class ArtistService {
     );
 
     const albums = await this.albumRepository.findBy({ artistId: Equal(id) });
-    await this.trackRepository.save(
+    await this.albumRepository.save(
       albums.map((track) => ({ ...track, artistId: null })),
     );
+  }
+
+  async removeAll() {
+    this.artistRepository.clear();
   }
 }

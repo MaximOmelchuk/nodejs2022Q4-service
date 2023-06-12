@@ -44,4 +44,10 @@ export class ArtistController {
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.artistService.remove(id);
   }
+
+  @HttpCode(204)
+  @Delete()
+  removeAll() {
+    return this.artistService.removeAll();
+  }
 }

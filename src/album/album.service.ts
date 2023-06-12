@@ -32,7 +32,7 @@ export class AlbumService {
   }
 
   async findOne(id: string) {
-    const found = this.albumRepository.findOneBy({ id });
+    const found = await this.albumRepository.findOneBy({ id });
     if (!found) throw new NotFoundException();
     return found;
   }
@@ -57,5 +57,8 @@ export class AlbumService {
     await this.trackRepository.save(
       tracks.map((track) => ({ ...track, albumId: null })),
     );
+  }
+  async removeAll() {
+    this.albumRepository.clear();
   }
 }

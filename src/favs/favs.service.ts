@@ -37,9 +37,9 @@ export class FavsService {
     const result: FavResp = { artists: [], albums: [], tracks: [] };
     const { artists, albums, tracks } = await this.getFavsArr();
 
-    result.artists = await this.artistRepository.findBy({ id: In(artists) });
-    result.albums = await this.albumRepository.findBy({ id: In(albums) });
-    result.tracks = await this.trackRepository.findBy({ id: In(tracks) });
+    result.artists = await this.artistRepository.findBy([{ id: In(artists) }]);
+    result.albums = await this.albumRepository.findBy([{ id: In(albums) }]);
+    result.tracks = await this.trackRepository.findBy([{ id: In(tracks) }]);
 
     return result;
   }
@@ -78,12 +78,16 @@ export class FavsService {
     const isExist = await this.artistRepository.findOneBy({ id });
     if (!isExist) throw new HttpException('Not exist', 422);
     const fav = await this.getFavsArr();
-
+    console.log(fav.artists, '=====fav.artists');
+    console.log(id, '=====id');
+    console.log(fav, '=====fav');
     if (!fav.artists.includes(id)) {
-      await this.artistRepository.save({
-        ...fav,
-        artists: [...fav.artists, id],
-      });
+      console.log(
+        await this.favRepository.save({
+          ...fav,
+          artists: [...fav.artists, id],
+        }),
+      );
       return 'Entity added to favourites';
     }
     return 'Allready added to favourites';
@@ -112,7 +116,7 @@ export class FavsService {
       const decreased = fav.artists.filter((item) => item !== id);
       await this.favRepository.save({
         ...fav,
-        albums: decreased,
+        artists: decreased,
       });
     }
   }
@@ -129,5 +133,9 @@ export class FavsService {
         albums: decreased,
       });
     }
+  }
+
+  async removeAll() {
+    this.favRepository.clear();
   }
 }

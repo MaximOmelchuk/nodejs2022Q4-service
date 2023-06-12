@@ -56,4 +56,7 @@ export class TrackService {
 
     await this.favService.removeTrack(id);
   }
+  async removeAll() {
+    this.trackRepository.clear();
+  }
 }

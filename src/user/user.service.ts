@@ -33,7 +33,7 @@ export class UserService {
 
   async findAll() {
     const users = await this.userRepository.find();
-    return users;
+    return users.map((item) => item.toResponse());
   }
 
   async findOne(id: string) {
@@ -59,5 +59,8 @@ export class UserService {
     const user: UserEntity = await this.userRepository.findOneBy({ id });
     if (!user) throw new NotFoundException();
     this.userRepository.delete({ id });
+  }
+  async removeAll() {
+    this.userRepository.clear();
   }
 }

@@ -50,4 +50,9 @@ export class UserController {
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.userService.remove(id);
   }
+  @HttpCode(204)
+  @Delete()
+  async removeAll() {
+    return this.userService.removeAll();
+  }
 }
