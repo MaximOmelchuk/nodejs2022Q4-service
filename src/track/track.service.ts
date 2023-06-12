@@ -1,17 +1,20 @@
 import { NotFoundException } from '@nestjs/common/exceptions';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
+import { FavsService } from 'src/favs/favs.service';
 
 @Injectable()
 export class TrackService {
   constructor(
     @InjectRepository(TrackEntity)
-    private trackRepository: Repository<TrackEntity>, // @InjectRepository(TrackEntity) // private trackRepository: Repository<TrackEntity>,    // TODO FAVS
+    private trackRepository: Repository<TrackEntity>,
+    @Inject(FavsService)
+    private favService: FavsService,
   ) {}
 
   async create(createTrackDto: CreateTrackDto) {
@@ -51,8 +54,6 @@ export class TrackService {
     const track: TrackEntity = await this.findOne(id);
     this.trackRepository.delete({ id });
 
-    // this.store.favs.tracks = this.store.favs.tracks.filter(               // TODO FAVS
-    //   (favId) => favId !== id,
-    // );
+    await this.favService.removeTrack(id);
   }
 }

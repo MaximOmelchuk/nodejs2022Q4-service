@@ -1,17 +1,26 @@
 import { NotFoundException } from '@nestjs/common/exceptions';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from './entities/artist.entity';
 import * as uuid from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
+import { AlbumEntity } from 'src/album/entities/album.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
+import { FavsService } from 'src/favs/favs.service';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @InjectRepository(ArtistEntity)
     private artistRepository: Repository<ArtistEntity>,
+    @InjectRepository(AlbumEntity)
+    private albumRepository: Repository<AlbumEntity>,
+    @InjectRepository(TrackEntity)
+    private trackRepository: Repository<TrackEntity>,
+    @Inject(FavsService)
+    private favService: FavsService,
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
@@ -42,25 +51,19 @@ export class ArtistService {
   }
 
   async remove(id: string) {
-    const artist: ArtistEntity = await this.findOne(id);
-    await this.artistRepository.delete({ id });
+    await this.findOne(id);
+    this.artistRepository.delete({ id });
 
-    // this.store.favs.artists = this.store.favs.artists.filter(
-    //   (favId) => favId !== id,
-    // );
+    await this.favService.removeArtist(id);
 
-    // this.store.tracks = this.store.tracks.map((track) => {
-    //   if (track.artistId === id) {
-    //     return copyObjKeyToNull(track, 'artistId');
-    //   }
-    //   return track;
-    // });
+    const tracks = await this.trackRepository.findBy({ artistId: Equal(id) });
+    await this.trackRepository.save(
+      tracks.map((track) => ({ ...track, artistId: null })),
+    );
 
-    // this.store.album = this.store.album.map((album) => {
-    //   if (album.artistId === id) {
-    //     return copyObjKeyToNull(album, 'artistId');
-    //   }
-    //   return album;
-    // });
+    const albums = await this.albumRepository.findBy({ artistId: Equal(id) });
+    await this.trackRepository.save(
+      albums.map((track) => ({ ...track, artistId: null })),
+    );
   }
 }

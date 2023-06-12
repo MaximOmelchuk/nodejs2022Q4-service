@@ -5,7 +5,6 @@ import { AlbumEntity } from './entities/album.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import * as uuid from 'uuid';
-import { FavEntity } from 'src/favs/entities/fav.entity';
 import { FavsService } from 'src/favs/favs.service';
 import { TrackEntity } from 'src/track/entities/track.entity';
 

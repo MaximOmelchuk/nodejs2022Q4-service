@@ -8,11 +8,11 @@ export class ArtistEntity {
   @IsString()
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsBoolean()
   @Transform(({ value }) => value === 'true')
   grammy: boolean;
