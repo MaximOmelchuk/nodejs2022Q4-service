@@ -2,53 +2,57 @@ import { NotFoundException } from '@nestjs/common/exceptions';
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import store, { Store } from 'src/store/store';
 import { TrackEntity } from './entities/track.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class TrackService {
-  private store: Store = store;
+  constructor(
+    @InjectRepository(TrackEntity)
+    private trackRepository: Repository<TrackEntity>, // @InjectRepository(TrackEntity) // private trackRepository: Repository<TrackEntity>,    // TODO FAVS
+  ) {}
 
-  create(createTrackDto: CreateTrackDto) {
+  async create(createTrackDto: CreateTrackDto) {
     const track: TrackEntity = {
-      id: crypto.randomUUID(),
+      id: uuid.v4(),
       ...createTrackDto,
       artistId: createTrackDto.artistId || null,
       albumId: createTrackDto.albumId || null,
     };
-    this.store.tracks.push(track);
+    await this.trackRepository.save(track);
     return track;
   }
 
-  findAll() {
-    return store.tracks;
+  async findAll() {
+    return await this.trackRepository.find();
   }
 
-  findOne(id: string) {
-    const track = this.store.tracks.find((track) => track.id === id);
+  async findOne(id: string) {
+    const track = await this.trackRepository.findOneBy({ id });
     if (!track) throw new NotFoundException();
     return track;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    const idx: number = this.store.tracks.findIndex((track) => track.id === id);
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const track: TrackEntity = await this.trackRepository.findOneBy({ id });
 
-    if (idx < 0) throw new NotFoundException();
+    if (!track) throw new NotFoundException();
     const updated: TrackEntity = {
-      ...this.store.tracks[idx],
+      ...track,
       ...updateTrackDto,
     };
-    this.store.tracks[idx] = updated;
-    return updated;
+    await this.trackRepository.save(updated);
+    return await this.findOne(id);
   }
 
-  remove(id: string) {
-    const idx: number = this.store.tracks.findIndex((item) => item.id === id);
-    if (idx < 0) throw new NotFoundException();
-    this.store.tracks.splice(idx, 1);
+  async remove(id: string) {
+    const track: TrackEntity = await this.findOne(id);
+    this.trackRepository.delete({ id });
 
-    this.store.favs.tracks = this.store.favs.tracks.filter(
-      (favId) => favId !== id,
-    );
+    // this.store.favs.tracks = this.store.favs.tracks.filter(               // TODO FAVS
+    //   (favId) => favId !== id,
+    // );
   }
 }

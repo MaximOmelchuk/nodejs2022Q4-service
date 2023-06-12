@@ -18,13 +18,13 @@ export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Post()
-  create(@Body(new ValidationPipe()) createTrackDto: CreateTrackDto) {
-    return this.trackService.create(createTrackDto);
+  async create(@Body(new ValidationPipe()) createTrackDto: CreateTrackDto) {
+    return await this.trackService.create(createTrackDto);
   }
 
   @Get()
-  findAll() {
-    return this.trackService.findAll();
+  async findAll() {
+    return await this.trackService.findAll();
   }
 
   @Get(':id')
@@ -39,6 +39,7 @@ export class TrackController {
   ) {
     return this.trackService.update(id, updateTrackDto);
   }
+
   @HttpCode(204)
   @Delete(':id')
   remove(@Param('id', new ParseUUIDPipe()) id: string) {

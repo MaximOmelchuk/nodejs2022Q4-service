@@ -12,7 +12,7 @@ import configService from './ormconfig';
 @Module({
   imports: [
     UserModule,
-    // TrackModule,
+    TrackModule,
     // ArtistModule,
     // AlbumModule,
     // FavsModule,

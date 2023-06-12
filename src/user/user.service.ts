@@ -8,8 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
-import store, { Store } from 'src/store/store';
-import omitKeyFromObj from 'src/utils/omitKeyFromObj';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -22,13 +21,12 @@ export class UserService {
     const date = Date.now();
     const user = {
       ...createUserDto,
-      id: crypto.randomUUID() as string,
+      id: uuid.v4() as string,
       version: 1,
       createdAt: date,
       updatedAt: date,
     };
 
-    // return omitKeyFromObj(user, 'password');
     const createdUser = this.userRepository.create(user);
     return (await this.userRepository.save(createdUser)).toResponse();
   }
@@ -36,7 +34,6 @@ export class UserService {
   async findAll() {
     const users = await this.userRepository.find();
     return users;
-    // return users.map((user) => user.toResponse());
   }
 
   async findOne(id: string) {
@@ -54,7 +51,8 @@ export class UserService {
     user.password = updateUserDto?.newPassword;
     user.version = user.version + 1;
     user.updatedAt = Date.now();
-    return (await this.userRepository.save(user)).toResponse();
+    await this.userRepository.save(user);
+    return await this.findOne(id);
   }
 
   async remove(id: string) {
