@@ -47,7 +47,7 @@ export class FavsController {
   }
 
   @Get()
-  findAll() {
-    return this.favsService.findAll();
+  async findAll() {
+    return await this.favsService.findAll();
   }
 }
