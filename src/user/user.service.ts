@@ -35,30 +35,31 @@ export class UserService {
 
   async findAll() {
     const users = await this.userRepository.find();
-    return users.map((user) => user.toResponse());
+    return users;
+    // return users.map((user) => user.toResponse());
   }
 
-  // findOne(id: string) {
-  //   const user: UserEntity = this.store.users.find((user) => user.id === id);
-  //   if (!user) throw new NotFoundException();
-  //   return omitKeyFromObj(user, 'password');
-  // }
+  async findOne(id: string) {
+    const user: UserEntity = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException();
+    return user.toResponse();
+  }
 
-  // update(id: string, updateUserDto: UpdateUserDto) {
-  //   const user: UserEntity = this.store.users.find((user) => user.id === id);
-  //   if (!user) throw new NotFoundException();
-  //   if (user.password !== updateUserDto.oldPassword) {
-  //     throw new ForbiddenException();
-  //   }
-  //   user.password = updateUserDto?.newPassword;
-  //   user.version = user.version + 1;
-  //   user.updatedAt = Date.now();
-  //   return omitKeyFromObj(user, 'password');
-  // }
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user: UserEntity = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException();
+    if (user.password !== updateUserDto.oldPassword) {
+      throw new ForbiddenException();
+    }
+    user.password = updateUserDto?.newPassword;
+    user.version = user.version + 1;
+    user.updatedAt = Date.now();
+    return (await this.userRepository.save(user)).toResponse();
+  }
 
-  // remove(id: string) {
-  //   const idx: number = this.store.users.findIndex((user) => user.id === id);
-  //   if (idx < 0) throw new NotFoundException();
-  //   this.store.users.splice(idx, 1);
-  // }
+  async remove(id: string) {
+    const user: UserEntity = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException();
+    this.userRepository.delete({ id });
+  }
 }

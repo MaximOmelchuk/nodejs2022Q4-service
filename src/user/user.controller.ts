@@ -30,23 +30,24 @@ export class UserController {
     return await this.userService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id', new ParseUUIDPipe()) id: string): UserResponseEntity {
-  //   return this.userService.findOne(id);
-  // }
+  @Get(':id')
+  async findOne(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<UserResponseEntity> {
+    return await this.userService.findOne(id);
+  }
 
-  // @Put(':id')
-  // update(
-  //   @Param('id', new ParseUUIDPipe()) id: string,
-  //   @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
-  // ): UserResponseEntity {
-  //   const user = this.userService.update(id, updateUserDto);
-  //   return user;
-  // }
+  @Put(':id')
+  async update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseEntity> {
+    return await this.userService.update(id, updateUserDto);
+  }
 
-  // @HttpCode(204)
-  // @Delete(':id')
-  // remove(@Param('id', new ParseUUIDPipe()) id: string) {
-  //   return this.userService.remove(id);
-  // }
+  @HttpCode(204)
+  @Delete(':id')
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.userService.remove(id);
+  }
 }
