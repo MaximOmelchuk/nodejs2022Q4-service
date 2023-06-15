@@ -1,0 +1,26 @@
+version: "3.7"
+
+volumes:
+  database:
+
+services:
+  # Postgres. Берем готовый официальный образ
+  database:
+    image: postgres:12-alpine
+    # Вот собственно тут и указывается, какие порты будут видны на вашей локали
+    ports:
+      - 5432:5432
+    # Там выше в volumes указывали набор volumes. Используем вольюм database, чтобы хранить БД
+    volumes:
+      - database:/var/lib/postgresql/data
+    restart: always
+
+  # Backend. Берем образ, что собрали выше
+  backend:
+    image: backend:latest
+    # В Dockerfile мы для гибкости не указывали порт backend-a. Укажем его тут.
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    restart: always

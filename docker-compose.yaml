@@ -1,11 +1,31 @@
-version: '3.5'
+version: '3.9'
 
 services:
+  nestapp:
+    container_name: nestapp
+    image: maximomelchuk/nestapp:1.0.0
+    build: .
+    ports:
+      - 4000:4000
+    environment:
+      - DB_TYPE=postgresgg
+      - PG_HOST=db
+      - PG_USER=postgres
+      - PG_PASSWORD=12345678
+      - PG_DB=postgres
+      - PG_PORT=5432
+    depends_on:
+      - db
   db:
     container_name: db
+    image: postgres:15.1-alpine
     ports:
-      - "5432:5432"
+      - 5432:5432
     environment:
-      - POSTGRES_PASSWORD=12345678
       - POSTGRES_USER=postgres
-    image: postgres:alpine3.18
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
