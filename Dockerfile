@@ -1,11 +1,15 @@
-FROM node:18-alpine
+FROM node:18.6-alpine
 
+# Create app directory
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json /app
 
-RUN npm install
+# Install app dependencies
+RUN npm install 
 
 COPY . .
 
-CMD ["npm", "run", "start"]
+EXPOSE ${PORT}
+
+CMD [ "npm", "run", "start:dev" ]
