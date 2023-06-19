@@ -1,5 +1,17 @@
 # Home Library Service
 
+## Run containers
+
+```
+npm run docker
+```
+
+## Run all tests (after running containers)
+
+```
+npm run docker:test
+```
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
